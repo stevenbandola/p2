@@ -3,14 +3,16 @@
 import { forwardRef, ReactNode, Suspense, useImperativeHandle, useRef } from 'react'
 import { OrbitControls, PerspectiveCamera, View as ViewImpl } from '@react-three/drei'
 import { Three } from '@/helpers/components/Three'
+import { SkySphere } from './SkySphere'
 
 export const Common = ({ color }) => (
   <Suspense fallback={null}>
-    {color && <color attach='background' args={[color]} />}
-    <ambientLight />
-    <pointLight position={[20, 30, 10]}  decay={0.2} />
-    <pointLight position={[-10, -10, -10]} color='blue' decay={0.2} />
-    <PerspectiveCamera makeDefault fov={40} position={[0, 0, 6]} />
+    {/* {color && <color attach='background' args={[color]} />} */}
+    {/* <ambientLight /> */}
+    {/* <pointLight position={[20, 30, 10]} decay={0.2} /> */}
+    {/* <pointLight position={[-10, -10, -10]} color='blue' decay={0.2} /> */}
+    {/* <PerspectiveCamera makeDefault fov={40} position={[0, 0, 6]} /> */}
+    <SkySphere />
   </Suspense>
 )
 interface ViewProps {

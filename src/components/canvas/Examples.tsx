@@ -1,7 +1,7 @@
 'use client'
 
 import { useGLTF } from '@react-three/drei'
-import { useFrame } from '@react-three/fiber'
+import { PrimitiveProps, useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useMemo, useRef, useState } from 'react'
 import { Line, useCursor, MeshDistortMaterial } from '@react-three/drei'
@@ -16,7 +16,8 @@ export const Blob = ({ route = '/', ...props }) => {
       onClick={() => router.push(route)}
       onPointerOver={() => hover(true)}
       onPointerOut={() => hover(false)}
-      {...props}>
+      {...props}
+    >
       <sphereGeometry args={[1, 64, 64]} />
       <MeshDistortMaterial roughness={0.5} color={hovered ? 'hotpink' : '#1fb2f5'} />
     </mesh>

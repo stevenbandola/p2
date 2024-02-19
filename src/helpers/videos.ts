@@ -1,0 +1,4 @@
+export const taya = {
+  videoUrl:
+    'https://cdn-cf-east.streamable.com/video/mp4/ks3tis.mp4?Expires=1708226107815&Key-Pair-Id=APKAIEYUVEN4EVB2OKEQ&Signature=YGNAAdPi1zCZD6m9fkgpIk~CHjClUYv0XiqavicJ~nNPZTQu9LMZlnyfImKSjfZFbJdsxLY7flxFJP82BU8LkY9ROl0I69VYMqs6dcdqfz252zLqy-HAu3~EOTtdI4t82VGlXHL2pbyg4k3NR7503OvYH~xIOXB9EOlHFQXRZDPFpxSq3SG7KdLcdWs7qPsSa6uD1brh-l58OKR9QZBYX3JpzBelGCzXyxNFzvDiBxSCJcj4mSrVZwlYYPRIC2Y-~2VLEbFQAPLbQtK3swwGbnbxPK-YoSkTQT6CTWJJZltEsjnqUa~OOArZqEAHuddbLFaJNuXl2bCr5xXH1Fmj-A__',
+}
