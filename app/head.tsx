@@ -1,8 +1,8 @@
-const title = 'React Three Next Starter'
-const url = 'https://react-three-next.vercel.app/'
-const description = 'The easiest and fastest way to create a 3D website using React Three Fiber and NextJS'
-const author = 'Author'
-const twitter = '@pmndrs'
+const title = 'Podchurch - Church forever, wherever'
+const url = 'https://podchur.ch'
+const description = 'Podchurch is a platform for churches to share their sermons and other content with their congregation and the world.'
+const author = 'Steven Bandola'
+const twitter = 'StevenBandola'
 
 export default function Head() {
   return (
@@ -20,7 +20,7 @@ export default function Head() {
       <meta name='description' content={description} />
       <meta
         name='keywords'
-        content='Software Engineer,Product Manager,Project Manager,Data Scientist,Computer Scientist'
+        content='podchurch, church, sermons, congregation, platform, share, content, world'
       />
       <meta name='robots' content='index,follow' />
       <meta name='distribution' content='web' />

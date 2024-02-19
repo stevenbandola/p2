@@ -38,7 +38,7 @@ export default function Page() {
           <View className='flex h-96 w-full flex-col items-center justify-center'>
             <Suspense fallback={null}>
               <Logo route='/blob' scale={0.6} position={[0, 0, 0]} />
-              <Common />
+              <Common color={"white"}/>
             </Suspense>
           </View>
         </div>
