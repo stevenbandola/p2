@@ -1,6 +1,7 @@
 import { taya } from '@/helpers/videos'
 import { useAspect } from '@react-three/drei'
 import { useFrame, useThree } from '@react-three/fiber'
+import { useControls } from 'leva'
 import { Suspense, useContext, useEffect, useState } from 'react'
 import { DoubleSide, LinearFilter, Mesh, MeshBasicMaterial, PlaneGeometry, Texture } from 'three'
 
@@ -35,7 +36,9 @@ export const VideoPlayer = () => {
   const onLoadedData = () => {
     setIsVideoLoaded(true)
   }
-
+  const { isPlaying } = useControls({
+    isPlaying: false,
+  })
   const [video] = useState(() => {
     const vid = document.createElement('video')
 
@@ -62,6 +65,13 @@ export const VideoPlayer = () => {
   // video.play()
   // }, [pod.id])
 
+  useEffect(() => {
+    if (isPlaying) {
+      video.play()
+    } else {
+      video.pause()
+    }
+  }, [isPlaying, video])
   const setVideoPlayback = (status) => {
     if (status.detail === 'playing') {
       video.play()

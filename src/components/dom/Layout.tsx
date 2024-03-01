@@ -2,6 +2,9 @@
 
 import { useRef } from 'react'
 import dynamic from 'next/dynamic'
+import { ModalsProvider } from '@mantine/modals'
+import { MantineProvider } from '@mantine/core'
+import { Leva } from 'leva'
 const Scene = dynamic(() => import('@/components/canvas/Scene'), { ssr: false })
 
 const Layout = ({ children }) => {
@@ -18,19 +21,24 @@ const Layout = ({ children }) => {
         touchAction: 'auto',
       }}
     >
-      {children}
-      <Scene
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          pointerEvents: 'none',
-        }}
-        eventSource={ref}
-        eventPrefix='client'
-      />
+      <MantineProvider>
+        <ModalsProvider>
+          {children}
+
+          <Scene
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100vw',
+              height: '100vh',
+              pointerEvents: 'none',
+            }}
+            eventSource={ref}
+            eventPrefix='client'
+          />
+        </ModalsProvider>
+      </MantineProvider>
     </div>
   )
 }
