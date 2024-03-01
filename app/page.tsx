@@ -1,11 +1,13 @@
 'use client'
 
+import { OptionType, RadialMenu } from '@/components/canvas/RadialMenu.tsx'
 import { SkySphere } from '@/components/canvas/SkySphere'
 import { VideoPlayer } from '@/components/canvas/VideoPlayer'
 import { DesktopFlyController } from '@/components/controllers/DesktopFlyController'
 import { Hud, PointerLockControls } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 import { XR } from '@react-three/xr'
+import { useControls } from 'leva'
 import dynamic from 'next/dynamic'
 import { Suspense, useState } from 'react'
 
@@ -28,7 +30,6 @@ const View = dynamic(() => import('@/components/canvas/View').then((mod) => mod.
   ),
 })
 const Common = dynamic(() => import('@/components/canvas/View').then((mod) => mod.Common), { ssr: false })
-
 export default function Page() {
   const [pointerLock, setPointerLock] = useState(false)
   if (!pointerLock) {
@@ -52,7 +53,7 @@ export default function Page() {
       <>
         {/* a full width comonent with a view for a new component */}
 
-        <div className='mx-auto flex h-full w-full flex-col flex-wrap items-center   lg:w-4/5'>
+        <div className='mx-auto flex h-full w-full flex-col flex-wrap items-center'>
           {/* jumbo */}
 
           <div className='h-full w-full text-center '>
@@ -66,6 +67,7 @@ export default function Page() {
                   <PointerLockControls />
                   <VideoPlayer />
                   <SkySphere />
+                  <RadialMenu />
                   {/* <Common color={'blue'} /> */}
                 </XR>
               </Hud>

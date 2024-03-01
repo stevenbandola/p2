@@ -25,7 +25,7 @@ export const SkySphere = () => {
       camera.far = 100000
       camera.updateProjectionMatrix()
       materialRef.current.map = texture
-      // materialRef.current.needsUpdate = true
+      materialRef.current.needsUpdate = true
     }, [])
 
     // console.log('🚀 ~ cleanup ~ texture:', texture)
