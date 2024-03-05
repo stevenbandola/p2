@@ -21,7 +21,7 @@ const developerToken =
   'hathora_org_st_kVl5QX8pmyuX6M5DgMIxQ7R0sre3lcqMY6CmK4khvTQpn6ofcg_edd599c65d338169513cf93dae1d773b'
 const hathordaSdk = new HathoraCloud({ appId })
 export const NetworkProvider = ({ children }) => {
-  const [channel, setChannel] = useState<ClientChannel>(geckos({ port: 39229, url: 'http://xz6tks.edge.hathora.dev' }))
+  const [channel, setChannel] = useState<ClientChannel>(geckos({ port: 39229, url: 'https://xz6tks.edge.hathora.dev' }))
 
   // geckos({ port: 26671, url: 'https://t3ffjw.edge.hathora.dev' }),
   // geckos({ port: 443, url: 'https://webrtc.podchur.ch' }),
