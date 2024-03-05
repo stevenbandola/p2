@@ -192,14 +192,14 @@ export const RadialMenu = () => {
     // console.log(child.raycast(raycaster, intersects))
     // return child.raycast(raycaster, intersects)
     // })
-    intersects.forEach((intersect) => {
-      console.log(intersect.object.name)
-      // intersect.object.
-      // if (intersect.object.name === 'slice1') {
-      //   console.log('slice1')
-      // }
-    })
-    if (intersects.length > 0) console.log(scene)
+    // intersects.forEach((intersect) => {
+    // console.log(intersect.object.name)
+    // intersect.object.
+    // if (intersect.object.name === 'slice1') {
+    //   console.log('slice1')
+    // }
+    // })
+    // if (intersects.length > 0) console.log(scene)
     // console.log(scene)
     if (!arrow) {
       arrow = new ArrowHelper(raycaster.ray.direction, raycaster.ray.origin, 100, Math.random() * 0xffffff)

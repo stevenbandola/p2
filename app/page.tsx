@@ -3,7 +3,9 @@
 import { OptionType, RadialMenu } from '@/components/canvas/RadialMenu.tsx'
 import { SkySphere } from '@/components/canvas/SkySphere'
 import { VideoPlayer } from '@/components/canvas/VideoPlayer'
+import { AppProvider } from '@/components/controllers/AppController'
 import { DesktopFlyController } from '@/components/controllers/DesktopFlyController'
+import { NetworkController } from '@/components/controllers/NetworkController'
 import { Hud, PointerLockControls } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 import { XR } from '@react-three/xr'
@@ -62,13 +64,16 @@ export default function Page() {
             <Canvas>
               <Hud renderPriority={1}>
                 <XR>
-                  {/* <Logo route='/blob' scale={0.6} position={[0, 0, 0]} /> */}
-                  <DesktopFlyController />
-                  <PointerLockControls />
-                  <VideoPlayer />
-                  <SkySphere />
-                  <RadialMenu />
-                  {/* <Common color={'blue'} /> */}
+                  <AppProvider>
+                    {/* <Logo route='/blob' scale={0.6} position={[0, 0, 0]} /> */}
+                    <DesktopFlyController />
+                    <PointerLockControls />
+                    <VideoPlayer />
+                    <SkySphere />
+                    <RadialMenu />
+                    {/* <NetworkController /> */}
+                    {/* <Common color={'blue'} /> */}
+                  </AppProvider>
                 </XR>
               </Hud>
             </Canvas>
