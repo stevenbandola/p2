@@ -1,15 +1,22 @@
 import { ClientChannel, geckos } from '@geckos.io/client'
 import { useThree } from '@react-three/fiber'
 import { useXR } from '@react-three/xr'
-import { createContext, useEffect, useState, useContext } from 'react'
+import { createContext, useEffect, useState, useContext, use } from 'react'
 import { AppContext } from './AppController'
-
+import process from 'process'
 // import { VoiceChat } from '../controllers/VoiceChat'
 
 export const NetworkController = createContext(null)
 import { HathoraCloud } from '@hathora/cloud-sdk-typescript'
-import { CreateLobbyRequest } from '@hathora/cloud-sdk-typescript/dist/sdk/models/operations'
-import { LobbyVisibility, Region } from '@hathora/cloud-sdk-typescript/dist/sdk/models/shared'
+import { CreateLobbyRequest, CreateLobbySecurity } from '@hathora/cloud-sdk-typescript/dist/sdk/models/operations'
+import {
+  ConnectionInfoV2Status,
+  Lobby,
+  LobbyV3,
+  LobbyVisibility,
+  Region,
+} from '@hathora/cloud-sdk-typescript/dist/sdk/models/shared'
+import { connect } from 'http2'
 
 // const developerToken = process.env.HATHORA_DEVELOPER_TOKEN
 
@@ -20,18 +27,25 @@ const appId = 'app-b8911170-67b3-4cbc-a28b-88ee3dd0ddc4'
 const developerToken =
   'hathora_org_st_kVl5QX8pmyuX6M5DgMIxQ7R0sre3lcqMY6CmK4khvTQpn6ofcg_edd599c65d338169513cf93dae1d773b'
 const hathordaSdk = new HathoraCloud({ appId })
+const authHeaders = {
+  headers: { Authorization: `Bearer ${developerToken}`, 'Content-Type': 'application/json' },
+}
 export const NetworkProvider = ({ children }) => {
-  const [channel, setChannel] = useState<ClientChannel>(geckos({ port: 39229, url: 'https://xz6tks.edge.hathora.dev' }))
+  const [channel, setChannel] = useState<ClientChannel>()
+  const [lobby, setLobby] = useState<LobbyV3>()
 
   // geckos({ port: 26671, url: 'https://t3ffjw.edge.hathora.dev' }),
   // geckos({ port: 443, url: 'https://webrtc.podchur.ch' }),
 
   const joinRoom = async () => {
-    const lobbies = await hathordaSdk.lobbyV3.listActivePublicLobbies(appId, undefined, {
-      headers: { Authorization: `Bearer ${developerToken}`, 'Content-Type': 'application/json' },
-    })
+    // console.log(process.env.NEXT_PUBLIC_HATHORA_PROCESS_ID)
+    const lobbies = await hathordaSdk.lobbyV3.listActivePublicLobbies(undefined, undefined, authHeaders)
     console.log(lobbies)
-    if (lobbies.rawResponse.data.length === 0) {
+    const anonymousToken = await hathordaSdk.authV1.loginAnonymous(undefined, authHeaders)
+    const lobbySecurity: CreateLobbySecurity = {
+      playerAuth: anonymousToken.loginResponse.token,
+    }
+    if (lobbies.classes.length === 0) {
       // console.log('no lobbies')
       const lobbyRequest: CreateLobbyRequest = {
         createLobbyV3Params: {
@@ -43,12 +57,16 @@ export const NetworkProvider = ({ children }) => {
           // roomConfig: undefined,
         },
       }
-      const lobby = hathordaSdk.lobbyV3
-        .createLobby(lobbyRequest, { playerAuth: '' })
-        // .createLobby(appId, { region: 'Seattle', visibility: 'local', roomConfig: undefined }, '1212')
-        .then((res) => console.log(res))
-      console.log(lobby)
+      const _lobby = await hathordaSdk.lobbyV3.createLobby(lobbyRequest, lobbySecurity)
+      if (!_lobby.lobbyV3) return
+      if (_lobby.lobbyV3) {
+        setLobby(_lobby.lobbyV3)
+      }
+
       return
+    } else {
+      const _lobby = lobbies.classes[0]
+      setLobby(_lobby)
     }
     // const createdRoom = await roomClient.createRoom(
     //   appId, // your Hathora application id
@@ -58,19 +76,30 @@ export const NetworkProvider = ({ children }) => {
     //   undefined, // (optional) use to set custom roomIds
     //   { headers: { Authorization: `Bearer ${developerToken}`, 'Content-Type': 'application/json' } },
     // )
-
-    // console.log(createdRoom)
-    // setup polling on the room
-
-    const { connectionInfoV2 } = await hathordaSdk.roomV2.getConnectionInfo(appId, '2zkkhqs770zyp', {
-      headers: { Authorization: `Bearer ${developerToken}`, 'Content-Type': 'application/json' },
-    })
-    // if (connectionInfoV2.status === 'active') {
-    //   setChannel(() => geckos({ port: connectionInfoV2.exposedPort.port, url: connectionInfoV2.exposedPort.host }))
-    // }
-    // const app = await new AppV1Api().getAppInfo(appId)
-    const rooms = console.log(connectionInfoV2)
   }
+
+  const connectToRoom = async (lobby: LobbyV3) => {
+    const room = await hathordaSdk.roomV2.getConnectionInfo(lobby.roomId, undefined, authHeaders)
+    console.log(room)
+    if (room.connectionInfoV2.status === ConnectionInfoV2Status.Starting) {
+      // setLobby(lobby)
+      setTimeout(() => {
+        connectToRoom(lobby)
+      }, 3000)
+    } else {
+      setChannel(
+        geckos({
+          port: room.connectionInfoV2.exposedPort.port,
+          url: `https://${room.connectionInfoV2.exposedPort.host}`,
+        }),
+      )
+    }
+  }
+
+  useEffect(() => {
+    if (!lobby) return
+    connectToRoom(lobby)
+  }, [lobby])
 
   const [channelId, setChannelId] = useState('')
   const { camera } = useThree()
@@ -81,7 +110,6 @@ export const NetworkProvider = ({ children }) => {
   let userRole = 'admin'
 
   useEffect(() => {
-    joinRoom()
     console.log(channel)
     if (!channel) return
     channel.onConnect((error) => {
@@ -99,12 +127,11 @@ export const NetworkProvider = ({ children }) => {
     })
 
     channel.onDisconnect(() => {
-      if (channel) channel.close()
+      if (channel.id) channel.close()
     })
 
-    joinRoom()
     return () => {
-      if (channel) channel.close()
+      if (channel.id) channel.close()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [channel])
@@ -136,6 +163,9 @@ export const NetworkProvider = ({ children }) => {
     // console.log(podHistory)
   }, [pod.id])
 
+  useEffect(() => {
+    joinRoom()
+  }, [])
   /**
    *
    * Move Player
